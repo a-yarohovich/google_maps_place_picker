@@ -24,6 +24,7 @@ class PlacePicker extends StatefulWidget {
     @required this.apiKey,
     this.onPlacePicked,
     @required this.initialPosition,
+    @required this.buttonSelectTxt,
     this.useCurrentLocation,
     this.desiredLocationAccuracy = LocationAccuracy.high,
     this.onMapCreated,
@@ -31,7 +32,6 @@ class PlacePicker extends StatefulWidget {
     this.searchingText,
     this.onAutoCompleteFailed,
     this.onGeocodingSearchFailed,
-    this.onMoveStart,
     this.proxyBaseUrl,
     this.httpClient,
     this.selectedPlaceWidgetBuilder,
@@ -63,7 +63,7 @@ class PlacePicker extends StatefulWidget {
   }) : super(key: key);
 
   final String apiKey;
-
+  final String buttonSelectTxt;
   final LatLng initialPosition;
   final bool useCurrentLocation;
   final LocationAccuracy desiredLocationAccuracy;
@@ -74,7 +74,6 @@ class PlacePicker extends StatefulWidget {
   final String searchingText;
   // final double searchBarHeight;
   // final EdgeInsetsGeometry contentPadding;
-  final VoidCallback onMoveStart;
 
   final ValueChanged<String> onAutoCompleteFailed;
   final ValueChanged<String> onGeocodingSearchFailed;
@@ -389,6 +388,7 @@ class _PlacePickerState extends State<PlacePicker> {
 
   Widget _buildMap(LatLng initialTarget) {
     return GoogleMapPlacePicker(
+      buttonSelectTxt: widget.buttonSelectTxt,
       initialTarget: initialTarget,
       appBarKey: appBarKey,
       selectedPlaceWidgetBuilder: widget.selectedPlaceWidgetBuilder,
@@ -420,7 +420,6 @@ class _PlacePickerState extends State<PlacePicker> {
       },
       onMoveStart: () {
         searchBarController.reset();
-        widget.onMoveStart();
       },
       onPlacePicked: widget.onPlacePicked,
     );
