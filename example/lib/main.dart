@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_place_picker/google_maps_place_picker.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-// Your api key storage.
-import 'keys.dart';
-
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -75,7 +72,8 @@ class _HomePageState extends State<HomePage> {
                     MaterialPageRoute(
                       builder: (context) {
                         return PlacePicker(
-                          apiKey: APIKeys.apiKey,
+                          onMoveStart: () {},
+                          apiKey: 'API_KEY',
                           initialPosition: HomePage.kInitialPosition,
                           useCurrentLocation: true,
                           selectInitialPosition: true,
@@ -91,29 +89,7 @@ class _HomePageState extends State<HomePage> {
                           //autocompleteLanguage: "ko",
                           //region: 'au',
                           //selectInitialPosition: true,
-                          selectedPlaceWidgetBuilder: (_, selectedPlace, state, isSearchBarFocused) {
-                            print("state: $state, isSearchBarFocused: $isSearchBarFocused");
-                            return isSearchBarFocused
-                                ? Container()
-                                : FloatingCard(
-                                    bottomPosition: 0.0, // MediaQuery.of(context) will cause rebuild. See MediaQuery document for the information.
-                                    leftPosition: 0.0,
-                                    rightPosition: 0.0,
-                                    width: 500,
-                                    borderRadius: BorderRadius.circular(12.0),
-                                    child: state == SearchingState.Searching
-                                        ? Center(child: CircularProgressIndicator())
-                                        : RaisedButton(
-                                            child: Text("Pick Here"),
-                                            onPressed: () {
-                                              // IMPORTANT: You MUST manage selectedPlace data yourself as using this build will not invoke onPlacePicker as
-                                              //            this will override default 'Select here' Button.
-                                              print("do something with [selectedPlace] data");
-                                              Navigator.of(context).pop();
-                                            },
-                                          ),
-                                  );
-                          },
+                          //selectedPlaceWidgetBuilder: _buidPickWidget,
                           // pinBuilder: (context, state) {
                           //   if (state == PinState.Idle) {
                           //     return Icon(Icons.favorite_border);
@@ -131,5 +107,60 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
         ));
+  }
+
+  Widget _buidPickWidget(
+      BuildContext context, PickResult data, SearchingState state, bool isSearchBarFocused) {
+    final sizeHeight = MediaQuery.of(context).size.height;
+    final sizeWidth = MediaQuery.of(context).size.width;
+    return isSearchBarFocused
+        ? Container()
+        // Use FloatingCard or just create your own Widget.
+        : FloatingCard(
+            // TODO make final variables for sizes
+            bottomPosition: sizeHeight * 0.05,
+            leftPosition: sizeWidth * 0.025,
+            rightPosition: sizeWidth * 0.025,
+            width: sizeWidth * 0.9,
+            borderRadius: BorderRadius.circular(12.0),
+            elevation: 4.0,
+            color: Theme.of(context).cardColor,
+            child: Padding(
+              padding: EdgeInsets.all(16),
+              child: data != null
+                  ? Column(
+                      children: [
+                        Text(
+                          data.formattedAddress,
+                          style: TextStyle(fontSize: 18),
+                          textAlign: TextAlign.center,
+                        ),
+                        SizedBox(height: 10),
+                        RaisedButton(
+                          padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                          child: Text(
+                            //TODO RUS
+                            "Выбрать место",
+                            style: TextStyle(fontSize: 16),
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(4.0),
+                          ),
+                          onPressed: () {},
+                        ),
+                      ],
+                    )
+                  : Container(
+                      height: 48,
+                      child: const Center(
+                        child: SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator(),
+                        ),
+                      ),
+                    ),
+            ),
+          );
   }
 }

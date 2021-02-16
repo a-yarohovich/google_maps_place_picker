@@ -31,6 +31,7 @@ class PlacePicker extends StatefulWidget {
     this.searchingText,
     this.onAutoCompleteFailed,
     this.onGeocodingSearchFailed,
+    this.onMoveStart,
     this.proxyBaseUrl,
     this.httpClient,
     this.selectedPlaceWidgetBuilder,
@@ -73,6 +74,7 @@ class PlacePicker extends StatefulWidget {
   final String searchingText;
   // final double searchBarHeight;
   // final EdgeInsetsGeometry contentPadding;
+  final VoidCallback onMoveStart;
 
   final ValueChanged<String> onAutoCompleteFailed;
   final ValueChanged<String> onGeocodingSearchFailed;
@@ -305,8 +307,7 @@ class _PlacePickerState extends State<PlacePicker> {
               region: widget.region,
               initialSearchString: widget.initialSearchString,
               searchForInitialValue: widget.searchForInitialValue,
-              autocompleteOnTrailingWhitespace:
-                  widget.autocompleteOnTrailingWhitespace),
+              autocompleteOnTrailingWhitespace: widget.autocompleteOnTrailingWhitespace),
         ),
         SizedBox(width: 5),
       ],
@@ -316,30 +317,23 @@ class _PlacePickerState extends State<PlacePicker> {
   _pickPrediction(Prediction prediction) async {
     provider.placeSearchingState = SearchingState.Searching;
 
-    final PlacesDetailsResponse response =
-        await provider.places.getDetailsByPlaceId(
+    final PlacesDetailsResponse response = await provider.places.getDetailsByPlaceId(
       prediction.placeId,
       sessionToken: provider.sessionToken,
       language: widget.autocompleteLanguage,
     );
-
-    if (response.errorMessage?.isNotEmpty == true ||
-        response.status == "REQUEST_DENIED") {
+    if (response.errorMessage?.isNotEmpty == true || response.status == "REQUEST_DENIED") {
       print("AutoCompleteSearch Error: " + response.errorMessage);
       if (widget.onAutoCompleteFailed != null) {
         widget.onAutoCompleteFailed(response.status);
       }
       return;
     }
-
     provider.selectedPlace = PickResult.fromPlaceDetailResult(response.result);
-
     // Prevents searching again by camera movement.
     provider.isAutoCompleteSearching = true;
-
-    await _moveTo(provider.selectedPlace.geometry.location.lat,
-        provider.selectedPlace.geometry.location.lng);
-
+    await _moveTo(
+        provider.selectedPlace.geometry.location.lat, provider.selectedPlace.geometry.location.lng);
     provider.placeSearchingState = SearchingState.Idle;
   }
 
@@ -351,7 +345,7 @@ class _PlacePickerState extends State<PlacePicker> {
       CameraUpdate.newCameraPosition(
         CameraPosition(
           target: LatLng(latitude, longitude),
-          zoom: 16,
+          zoom: 17,
         ),
       ),
     );
@@ -359,16 +353,14 @@ class _PlacePickerState extends State<PlacePicker> {
 
   _moveToCurrentPosition() async {
     if (provider.currentPosition != null) {
-      await _moveTo(provider.currentPosition.latitude,
-          provider.currentPosition.longitude);
+      await _moveTo(provider.currentPosition.latitude, provider.currentPosition.longitude);
     }
   }
 
   Widget _buildMapWithLocation() {
     if (widget.useCurrentLocation) {
       return FutureBuilder(
-          future: provider
-              .updateCurrentLocation(widget.forceAndroidLocationManager),
+          future: provider.updateCurrentLocation(widget.forceAndroidLocationManager),
           builder: (context, snap) {
             if (snap.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
@@ -376,8 +368,8 @@ class _PlacePickerState extends State<PlacePicker> {
               if (provider.currentPosition == null) {
                 return _buildMap(widget.initialPosition);
               } else {
-                return _buildMap(LatLng(provider.currentPosition.latitude,
-                    provider.currentPosition.longitude));
+                return _buildMap(
+                    LatLng(provider.currentPosition.latitude, provider.currentPosition.longitude));
               }
             }
           });
@@ -422,13 +414,13 @@ class _PlacePickerState extends State<PlacePicker> {
           Timer(Duration(seconds: widget.myLocationButtonCooldown), () {
             provider.isOnUpdateLocationCooldown = false;
           });
-          await provider
-              .updateCurrentLocation(widget.forceAndroidLocationManager);
+          await provider.updateCurrentLocation(widget.forceAndroidLocationManager);
           await _moveToCurrentPosition();
         }
       },
       onMoveStart: () {
         searchBarController.reset();
+        widget.onMoveStart();
       },
       onPlacePicked: widget.onPlacePicked,
     );
