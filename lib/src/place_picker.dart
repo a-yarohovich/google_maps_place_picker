@@ -29,8 +29,6 @@ class PlacePicker extends StatefulWidget {
     this.onMapCreated,
     this.hintText,
     this.searchingText,
-    // this.searchBarHeight,
-    // this.contentPadding,
     this.onAutoCompleteFailed,
     this.onGeocodingSearchFailed,
     this.proxyBaseUrl,
