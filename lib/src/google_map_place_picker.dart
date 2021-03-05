@@ -151,6 +151,7 @@ class GoogleMapPlacePicker extends StatelessWidget {
           CameraPosition initialCameraPosition = CameraPosition(target: initialTarget, zoom: 17);
 
           return GoogleMap(
+            zoomControlsEnabled: false,
             myLocationButtonEnabled: false,
             compassEnabled: false,
             mapToolbarEnabled: false,
@@ -161,7 +162,6 @@ class GoogleMapPlacePicker extends StatelessWidget {
               provider.mapController = controller;
               provider.setCameraPosition(null);
               provider.pinState = PinState.Idle;
-
               // When select initialPosition set to true.
               if (selectInitialPosition) {
                 provider.setCameraPosition(initialCameraPosition);
@@ -306,11 +306,12 @@ class GoogleMapPlacePicker extends StatelessWidget {
   }
 
   Widget _defaultPlaceWidgetBuilder(BuildContext context, PickResult data, SearchingState state) {
+    final size = MediaQuery.of(context).size;
     return FloatingCard(
-      bottomPosition: MediaQuery.of(context).size.height * 0.05,
-      leftPosition: MediaQuery.of(context).size.width * 0.025,
-      rightPosition: MediaQuery.of(context).size.width * 0.025,
-      width: MediaQuery.of(context).size.width * 0.9,
+      bottomPosition: size.height * 0.05,
+      leftPosition: size.width * 0.025,
+      rightPosition: size.width * 0.025,
+      width: size.width * 0.9,
       borderRadius: BorderRadius.circular(12.0),
       elevation: 4.0,
       color: Theme.of(context).cardColor,
