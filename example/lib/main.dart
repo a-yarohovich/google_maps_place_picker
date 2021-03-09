@@ -73,7 +73,7 @@ class _HomePageState extends State<HomePage> {
                       builder: (context) {
                         return PlacePicker(
                           buttonSelectTxt: "Хочу тут",
-                          apiKey: 'API_KEY',
+                          apiKey: 'APIKEY',
                           initialPosition: HomePage.kInitialPosition,
                           useCurrentLocation: true,
                           selectInitialPosition: true,
@@ -84,19 +84,6 @@ class _HomePageState extends State<HomePage> {
                             Navigator.of(context).pop();
                             setState(() {});
                           },
-                          //forceSearchOnZoomChanged: true,
-                          //automaticallyImplyAppBarLeading: false,
-                          //autocompleteLanguage: "ko",
-                          //region: 'au',
-                          //selectInitialPosition: true,
-                          //selectedPlaceWidgetBuilder: _buidPickWidget,
-                          // pinBuilder: (context, state) {
-                          //   if (state == PinState.Idle) {
-                          //     return Icon(Icons.favorite_border);
-                          //   } else {
-                          //     return Icon(Icons.favorite);
-                          //   }
-                          // },
                         );
                       },
                     ),

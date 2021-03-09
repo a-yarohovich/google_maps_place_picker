@@ -25,7 +25,7 @@ class PredictionTile extends StatelessWidget {
   }
 
   List<TextSpan> _buildPredictionText(BuildContext context) {
-    final List<TextSpan> result = List<TextSpan>();
+    final List<TextSpan> result = [];
     final textColor = Theme.of(context).textTheme.headline6.color;
 
     if (prediction.matchedSubstrings.length > 0) {

@@ -308,7 +308,7 @@ class GoogleMapPlacePicker extends StatelessWidget {
   Widget _defaultPlaceWidgetBuilder(BuildContext context, PickResult data, SearchingState state) {
     final size = MediaQuery.of(context).size;
     return FloatingCard(
-      bottomPosition: size.height * 0.05,
+      bottomPosition: size.height * 0.075,
       leftPosition: size.width * 0.025,
       rightPosition: size.width * 0.025,
       width: size.width * 0.9,
@@ -346,13 +346,12 @@ class GoogleMapPlacePicker extends StatelessWidget {
           ),
           SizedBox(height: 10),
           RaisedButton(
-            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
             child: Text(
               buttonSelectTxt,
               style: TextStyle(fontSize: 16),
             ),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(4.0),
+              borderRadius: BorderRadius.circular(8.0),
             ),
             onPressed: () {
               onPlacePicked(result);
