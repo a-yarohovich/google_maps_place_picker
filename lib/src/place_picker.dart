@@ -276,9 +276,7 @@ class _PlacePickerState extends State<PlacePicker> {
         widget.automaticallyImplyAppBarLeading
             ? IconButton(
                 onPressed: () => Navigator.maybePop(context),
-                icon: Icon(
-                  Platform.isIOS ? Icons.arrow_back_ios : Icons.arrow_back,
-                ),
+                icon: Icon(Icons.arrow_back_ios),
                 padding: EdgeInsets.zero)
             : SizedBox(width: 15),
         Expanded(
